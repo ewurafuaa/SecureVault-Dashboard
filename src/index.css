@@ -1,8 +1,30 @@
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
 :root {
   --color-bg-primary: #091523;
-  --color-bg-hover: #131e30;
-  --color-bg-selected: #1a2a40;
-  --color-border: #1e2d42;
+  --color-bg-hover: #2D3B4B;
+  --color-bg-pressed: #18202A;
+  --color-bg-selected: #1F2A37;
+  --color-border-gray: #3A495A;
   --color-accent: #3b82f6;
   --color-accent-hover: #2563eb;
   --color-text-primary: #e2e8f0;
@@ -11,7 +33,7 @@
   --color-folder: #e3b341;
   --color-success: #3fb950;
 
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family: 'Helvetica Now Display', Helvetica, Arial, sans-serif;
   --font-size-xs: 11px;
   --font-size-sm: 13px;
   --font-size-md: 14px;

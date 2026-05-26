@@ -84,6 +84,30 @@ export default function App() {
 
         {/* MAIN CONTENT */}
         <main className="main-content">
+
+          <div className="page-header">
+            <span className="page-title">Dashboard</span>
+          </div>
+
+          <div className="panels-wrapper">
+
+            {/* LEFT PANEL — file tree will go here */}
+            <div className="panel panel-left">
+              <div className="panel-empty">
+                <div className="panel-empty-icon">☰</div>
+                <span className="panel-empty-text">Recently opened documents appear here</span>
+              </div>
+            </div>
+
+            {/* RIGHT PANEL — properties will go here */}
+            <div className="panel panel-right">
+              <div className="panel-empty">
+                <div className="panel-empty-icon">📁</div>
+                <span className="panel-empty-text">Select a folder to view details here</span>
+              </div>
+            </div>
+
+          </div>
         </main>
 
       </div>
