@@ -4,6 +4,8 @@ import "./App.css";
 export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeNav, setActiveNav] = useState("dashboard");
+  const [showModal, setShowModal] = useState(false);
+  const [workspaceName, setWorkspaceName] = useState("");
 
   const navItems = [
     { id: "dashboard", icon: "/grid.png", label: "Dashboard" },
@@ -13,6 +15,40 @@ export default function App() {
 
   return (
     <div className="app-layout">
+
+      {/* MODAL OVERLAY */}
+      {showModal && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+
+            <div className="modal-header">
+              <span className="modal-title">Create Workspace</span>
+              <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
+            </div>
+
+            <div className="modal-progress">
+              <div className="modal-progress-fill" />
+              <div className="modal-progress-track" />
+            </div>
+
+            <div className="modal-body">
+              <label className="modal-label">Workspace Name</label>
+              <input
+                className={`modal-input ${workspaceName.trim() ? "modal-input-filled" : ""}`}
+                type="text"
+                placeholder="Add a name"
+                value={workspaceName}
+                onChange={(e) => setWorkspaceName(e.target.value)}
+              />
+            </div>
+
+            <div className="modal-footer">
+              <button className={`modal-next-btn ${workspaceName.trim() ? "modal-next-btn-active" : ""}`}>Next</button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* SIDEBAR */}
       <aside className="sidebar">
@@ -38,9 +74,12 @@ export default function App() {
           ))}
         </nav>
 
-        <div>
+        <div className="sidebar-section">
           <div className="sidebar-section-title">WORKSPACES</div>
-          <div className="sidebar-recents" />
+          <button className="create-workspace-btn" onClick={() => setShowModal(true)}>
+            <img src="/add.png" alt="" className="nav-icon" />
+            Create Workspace
+          </button>
         </div>
 
         <div className="sidebar-bottom">
@@ -85,23 +124,18 @@ export default function App() {
         {/* MAIN CONTENT */}
         <main className="main-content">
           <div className="panels-wrapper">
-            
-            {/* LEFT PANEL — file tree will go here */}
             <div className="panel panel-left">
               <div className="panel-empty">
-                <img src="/recents.png" alt="" className="panel-empty-icon"/>
+                <img src="/recents.png" alt="" className="panel-empty-icon" />
                 <span className="panel-empty-text">Recently opened documents appear here</span>
               </div>
             </div>
-
-            {/* RIGHT PANEL — properties will go here */}
             <div className="panel panel-right">
               <div className="panel-empty">
-                <img src="/folder-details.png" alt="" className="panel-empty-icon"/>
+                <img src="/folder-details.png" alt="" className="panel-empty-icon" />
                 <span className="panel-empty-text">Select a folder to view details here</span>
               </div>
             </div>
-
           </div>
         </main>
 
