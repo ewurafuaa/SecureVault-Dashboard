@@ -84,13 +84,8 @@ export default function App() {
 
         {/* MAIN CONTENT */}
         <main className="main-content">
-
-          <div className="page-header">
-            <span className="page-title">Dashboard</span>
-          </div>
-
+          
           <div className="panels-wrapper">
-
             {/* LEFT PANEL — file tree will go here */}
             <div className="panel panel-left">
               <div className="panel-empty">

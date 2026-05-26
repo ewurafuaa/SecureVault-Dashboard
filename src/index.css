@@ -20,29 +20,30 @@
 }
 
 :root {
-  --color-bg-primary: #091523;
-  --color-bg-hover: #2D3B4B;
-  --color-bg-pressed: #18202A;
-  --color-bg-selected: #1F2A37;
+  --color-primary-bg: #091523;
+  --color-secondary-bg: #293442;
+  --color-hovered: #2D3B4B;
+  --color-pressed: #18202A;
+  --color-active: #1F2A37;
   --color-border-gray: #3A495A;
-  --color-accent: #3b82f6;
-  --color-accent-hover: #2563eb;
-  --color-text-primary: #e2e8f0;
-  --color-text-secondary: #64748b;
-  --color-text-muted: #334155;
+  --color-light-gray: #88909A;
+  --color-primary-blue: #165DD3;
+  --color-hovered-blue: #2563eb;
+  --color-pressed-blue: #1B4FA6;
+  --color-text-primary: #ffffff;
   --color-folder: #e3b341;
   --color-success: #3fb950;
 
   --font-family: 'Helvetica Now Display', Helvetica, Arial, sans-serif;
-  --font-size-xs: 11px;
-  --font-size-sm: 13px;
+  --font-size-xs: 10px;
+  --font-size-sm: 12px;
   --font-size-md: 14px;
   --font-size-lg: 16px;
 
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
+  --spacing-xs: 5px;
+  --spacing-sm: 10px;
+  --spacing-md: 20px;
+  --spacing-lg: 40px;
 
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -52,7 +53,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  background-color: var(--color-bg-primary);
+  background-color: var(--color-primary-bg);
   color: var(--color-text-primary);
   font-family: var(--font-family);
   font-size: var(--font-size-md);
