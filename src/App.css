@@ -3,7 +3,7 @@
   height: 100vh;
 }
 
-/* Sidebar */
+/* Sidebar -------------------------------------------------------*/
 .sidebar {
   width: 268px;
   min-width: 268px;
@@ -23,6 +23,13 @@
   object-position: left;
 }
 
+.btn-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(10);
+}
+
 .new-btn {
   display: flex;
   align-items: center;
@@ -31,61 +38,61 @@
   background-color: var(--color-primary-blue);
   color: white;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-size-md);
   cursor: pointer;
-  transition: background-color var(--transition);
+  transition: background-color var(--transition), box-shadow 150ms ease-in;
 }
 
-.new-btn:hover { background-color: var(--color-hovered-blue); }
+.new-btn:hover { 
+  background-color: var(--color-hovered-blue);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.3); 
+}
 
-.btn-icon {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  filter: brightness(10);
+.new-btn:active {
+  background-color: var(--color-pressed-blue);
+  box-shadow: 0 0 20px rgba(27, 79, 166, 0.3);
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 5px;
 }
 
 .sidebar-nav-item {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: 8px var(--spacing-sm);
-  border-radius: var(--radius-sm);
+  padding: 10px var(--spacing-md);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+  color: #fff;
   transition: background-color var(--transition), color var(--transition);
 }
 
 .sidebar-nav-item:hover {
-  background-color: var(--color-bg-hover);
-  color: var(--color-text-primary);
+  background-color: var(--color-hovered);
 }
 
 .sidebar-nav-item.active {
-  background-color: var(--color-bg-selected);
+  background-color: var(--color-active);
   color: var(--color-text-primary);
 }
 
 .nav-icon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .sidebar-section-title {
   font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  letter-spacing: 1.2px;
+  color: var(--color-light-gray);
+  letter-spacing: 1.5px;
   padding: 0 var(--spacing-sm);
   text-transform: uppercase;
 }
@@ -93,7 +100,6 @@
 .sidebar-recents {
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
 
 .sidebar-bottom {
@@ -107,52 +113,50 @@
   padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
 }
 
 .storage-label {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  color: #fff;
 }
 
 .storage-bar-track {
   width: 100%;
-  height: 6px;
+  height: 10px;
   background-color: var(--color-border-gray);
-  border-radius: 999px;
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
 .storage-bar-fill {
   height: 100%;
   background-color: var(--color-primary-blue);
-  border-radius: 999px;
+  border-radius: var(--radius-md);
   width: 23%;
 }
 
 .storage-meta {
   display: flex;
   justify-content: space-between;
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   color: var(--color-light-gray);
 }
 
-/* RIGHT WRAPPER */
-.right-wrapper {
+/* Right Section ----------------------------------------------------*/
+.right-section {
   display: flex;
   flex-direction: column;
   flex: 1;
   overflow: hidden;
 }
 
-/* TOPBAR */
+/* Topbar */
 .topbar {
   display: flex;
   align-items: center;
-  padding: 0 var(--spacing-lg);
-  height: 56px;
-  background-color: var(--color-bg-secondary);
+  padding: 0 var(--spacing-md);
+  height: 80px;
   border-bottom: 1px solid var(--color-border-gray);
   flex-shrink: 0;
 }
@@ -164,22 +168,21 @@
 }
 
 .topbar-nav-link {
-  font-size: var(--font-size-md);
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  color: var(--color-light-gray);
   cursor: pointer;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   transition: color var(--transition);
 }
 
 .topbar-nav-link.active {
-  color: var(--color-text-primary);
+  color: #fff;
 }
 
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   margin-left: auto;
 }
 
@@ -187,18 +190,17 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  background-color: var(--color-bg-sidebar);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 6px var(--spacing-sm);
-  width: 260px;
+  background-color: var(--color-active);
+  border: 1px solid var(--color-border-gray);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  width: 380px;
 }
 
 .search-icon {
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
-  opacity: 0.5;
   flex-shrink: 0;
 }
 
@@ -206,35 +208,34 @@
   background: none;
   border: none;
   outline: none;
-  color: var(--color-text-primary);
+  color: var(--color-light-gray);
   font-family: var(--font-family);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   width: 100%;
 }
 
-.search-bar::placeholder { color: var(--color-text-secondary); }
+.search-bar::placeholder { 
+  color: var(--color-text-secondary); 
+}
 
 .avatar {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: var(--color-accent);
+  background-color: #2975CC;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--font-size-sm);
-  font-weight: 700;
-  color: white;
+  font-size: var(--font-size-md);
+  color: #fff;
   cursor: pointer;
 }
 
-
-
-/* MAIN CONTENT */
+/* Main Content */
 .main-content {
   flex: 1;
   overflow: hidden;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -272,8 +273,9 @@
 }
 
 .panel-empty-icon {
-  font-size: 36px;
-  opacity: 0.4;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 
 .panel-empty-text {

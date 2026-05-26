@@ -39,7 +39,7 @@ export default function App() {
         </nav>
 
         <div>
-          <div className="sidebar-section-title">Recents</div>
+          <div className="sidebar-section-title">WORKSPACES</div>
           <div className="sidebar-recents" />
         </div>
 
@@ -58,7 +58,7 @@ export default function App() {
       </aside>
 
       {/* RIGHT SIDE */}
-      <div className="right-wrapper">
+      <div className="right-section">
 
         {/* TOPBAR */}
         <header className="topbar">
@@ -84,12 +84,12 @@ export default function App() {
 
         {/* MAIN CONTENT */}
         <main className="main-content">
-          
           <div className="panels-wrapper">
+            
             {/* LEFT PANEL — file tree will go here */}
             <div className="panel panel-left">
               <div className="panel-empty">
-                <div className="panel-empty-icon">☰</div>
+                <img src="/recents.png" alt="" className="panel-empty-icon"/>
                 <span className="panel-empty-text">Recently opened documents appear here</span>
               </div>
             </div>
@@ -97,7 +97,7 @@ export default function App() {
             {/* RIGHT PANEL — properties will go here */}
             <div className="panel panel-right">
               <div className="panel-empty">
-                <div className="panel-empty-icon">📁</div>
+                <img src="/folder-details.png" alt="" className="panel-empty-icon"/>
                 <span className="panel-empty-text">Select a folder to view details here</span>
               </div>
             </div>
