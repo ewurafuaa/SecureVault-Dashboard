@@ -6,21 +6,18 @@ A modern, high-performance file explorer interface built for SecureVault Inc.,  
 
 The design file includes a dedicated Design System page covering the full color palette, typography scale, spacing grid, component states, and brand guidelines. 
 
-- Figma 
-[View Design and Design System](https://www.figma.com/design/3dP61SRt906j1qu1rjVKsC/SecureVault-Dashboard?node-id=242-525&t=IiDsCzAa1AHDpE8V-1)
+- [View Design and Design System](https://www.figma.com/design/3dP61SRt906j1qu1rjVKsC/SecureVault-Dashboard?node-id=242-525&t=IiDsCzAa1AHDpE8V-1)
  
 ## Repository and Deployment Links
 
-- Repository Link 
-[Link](https://github.com/ewurafuaa/SecureVault-Dashboard)
+- [Repository Link](https://github.com/ewurafuaa/SecureVault-Dashboard)
 
-- Deployment Link 
-[Link](https://securevault-kappa.vercel.app/)
+- [Deployment Link](https://securevault-kappa.vercel.app/)
 
  
 ---
  
-## Setup
+## Setup Instructions
  
 ```bash
 # Clone the repository
@@ -40,7 +37,7 @@ Requires Node.js 18+. No additional environment variables needed.
 ## Tech Stack
  
 - **React** (Vite)
-- **Vanilla CSS** with CSS custom properties — no component libraries used
+- **Vanilla CSS** with CSS custom properties
 - **Custom font:** Helvetica Now Display (loaded via `@font-face`)
 ---
  
@@ -96,7 +93,7 @@ Focus management in the tree uses a custom `selectonly` DOM event to separate "m
  
 ## Wildcard Feature — Workspaces
 
-One wildcard feature I believe would be the most strategic thing to add: **Workspaces**
+One wildcard feature I believed was the most strategic thing to add: **Workspaces**
 
 File Explorer does have some limitations because it was created based on the idea of accessing data in a read-only manner. You are able to search for and open the file. But when we are talking about business cases like working with a law firm or a bank, one should understand that any file is a part of something bigger; there is always a case, a deal, a client. And the workspace helps users to organize the sets of files related to particular group of people in a certain space.
 
