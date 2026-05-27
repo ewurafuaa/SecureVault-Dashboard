@@ -17,6 +17,7 @@ export default function TreeNode({ node, depth, onSelect, selectedId, matchingId
   const isActive = isSelected;
 
   function handleClick() {
+    if (isFolder) setIsOpen((p) => !p);
     onSelect(node);
   }
 
@@ -62,7 +63,7 @@ export default function TreeNode({ node, depth, onSelect, selectedId, matchingId
         style={{ paddingLeft: `${depth * 16}px` }}
       >
         {/* CHEVRON */}
-        <span className="tree-arrow" onClick={handleClick}>
+        <span className="tree-arrow" onClick={(e) => { e.stopPropagation(); setIsOpen((p) => !p); }}>
           {isFolder && (
             <img
               src="/chevron-right.png"
