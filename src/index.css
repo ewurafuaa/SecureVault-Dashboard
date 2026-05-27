@@ -46,7 +46,9 @@
   --spacing-md: 20px;
   --spacing-lg: 40px;
 
+  --radius-sm: 5px;
   --radius-md: 10px;
+
   --transition: 0.15s ease;
 }
 

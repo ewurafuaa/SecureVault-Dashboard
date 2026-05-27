@@ -43,7 +43,6 @@ export default function App() {
     setEmails(["", "", ""]);
   }
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -57,7 +56,7 @@ export default function App() {
   return (
     <div className="app-layout">
 
-      {/* MODAL OVERLAY */}
+      {/* Modal Overlay --------------------------------------------------------------------------------------------------------------------- */}
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -87,8 +86,7 @@ export default function App() {
                 <div className="modal-footer">
                   <button
                     className={`modal-next-btn ${workspaceName.trim() ? "modal-next-btn-active" : ""}`}
-                    onClick={() => workspaceName.trim() && setModalStep(2)}
-                  >
+                    onClick={() => workspaceName.trim() && setModalStep(2)}>
                     Next
                   </button>
                 </div>
@@ -136,7 +134,7 @@ export default function App() {
         </div>
       )}
 
-      {/* SIDEBAR */}
+      {/* Sidebar -------------------------------------------------------------------------------------------------------------- */}
       <aside className="sidebar">
         <div className="sidebar-logo">
           <img src="/Logo.png" alt="SecureVault Inc." className="sidebar-logo-img" />
@@ -160,7 +158,7 @@ export default function App() {
           ))}
         </nav>
 
-        {/* WORKSPACE SECTION */}
+        {/* Workspace Section -------------------------------------------------------------------------------------------- */}
         <div className="sidebar-section">
           <div className="sidebar-section-title">WORKSPACE</div>
 
@@ -202,7 +200,7 @@ export default function App() {
                       setShowModal(true);
                     }}
                   >
-                    <img src="/add.png" alt="" className="nav-icon" />
+                    <img src="/add.png" alt="" className="workspace-icon" />
                     Create Workspace
                   </button>
                 </div>
@@ -230,11 +228,13 @@ export default function App() {
         </div>
       </aside>
 
-      {/* RIGHT SIDE */}
+      {/* Right Side ------------------------------------------------------------------------------- */}
       <div className="right-section">
         <header className="topbar">
           <nav className="topbar-center">
-            <span className="topbar-nav-link active">Dashboard</span>
+            <span className="topbar-nav-link active">
+              {activeWorkspace ? activeWorkspace.name : "Dashboard"}
+            </span>
           </nav>
           <div className="topbar-right">
             <div className="search-bar-wrapper">
@@ -254,18 +254,80 @@ export default function App() {
 
         <main className="main-content">
           <div className="panels-wrapper">
+
+            {/* Left Panel ------------------------------------------------------------------------ */}
             <div className="panel panel-left">
-              <div className="panel-empty">
-                <img src="/recents.png" alt="" className="panel-empty-icon" />
-                <span className="panel-empty-text">Recently opened documents appear here</span>
-              </div>
+              {activeWorkspace ? (
+                <div className="workspace-panel">
+
+                  {/* Workspace Sidebar ------------------------------------------------------- */}
+                  <div className="workspace-sidebar">
+                    <div className="workspace-sidebar-header">
+                      <div className="workspace-sidebar-title">
+                        <img src="/folder-filled.png" alt="" className="nav-icon" />
+                        <span>{activeWorkspace.name}</span>
+                      </div>
+                      <button className="workspace-sub-more">
+                        <img src="/more.png" alt="" className="nav-icon" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Workspace Main Area ----------------------------------------------------- */}
+                  <div className="workspace-main">
+                    <div className="workspace-toolbar">
+                      <button className="toolbar-btn">
+                        <img src="/upload.png" alt="" className="nav-icon" />
+                        Upload
+                      </button>
+                      <button className="toolbar-btn">
+                        <img src="/create-folder.png" alt="" className="nav-icon" />
+                        Create Folder
+                      </button>
+                      <button className="toolbar-btn">
+                        <img src="/share.png" alt="" className="nav-icon" />
+                        Share
+                      </button>
+                      <button className="toolbar-btn toolbar-btn-sort">
+                        <img src="/sort.png" alt="" className="nav-icon" />
+                        Sort
+                      </button>
+                    </div>
+
+                    <div className="workspace-main-divider"/>
+
+                    <div className="workspace-table-header">
+                      <span className="table-col-name">Name</span>
+                      <span className="table-col">Date Modified</span>
+                      <span className="table-col">Type</span>
+                      <span className="table-col">Size</span>
+                    </div>
+
+                    <div className="workspace-main-divider"/>
+
+                    <div className="workspace-empty">
+                      <img src="/recents.png" alt="" className="panel-empty-icon" />
+                      <span className="panel-empty-text">Workspace documents will appear here</span>
+                    </div>
+                  </div>
+
+                </div>
+              ) : (
+                <div className="panel-empty">
+                  <img src="/recents.png" alt="" className="panel-empty-icon" />
+                  <span className="panel-empty-text">Recently opened documents appear here</span>
+                </div>
+              )}
             </div>
+
+            {/* RIGHT PANEL */}
             <div className="panel panel-right">
               <div className="panel-empty">
                 <img src="/folder-details.png" alt="" className="panel-empty-icon" />
                 <span className="panel-empty-text">Select a folder to view details here</span>
               </div>
             </div>
+
           </div>
         </main>
       </div>
