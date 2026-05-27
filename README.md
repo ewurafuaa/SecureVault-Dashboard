@@ -91,7 +91,7 @@ Focus management in the tree uses a custom `selectonly` DOM event to separate "m
  
 ---
  
-## Wildcard Feature — Workspaces
+## Wildcard Feature
 
 One wildcard feature I believed was the most strategic thing to add: **Workspaces**
 
