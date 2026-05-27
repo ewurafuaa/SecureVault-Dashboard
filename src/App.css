@@ -941,12 +941,9 @@
   gap: var(--spacing-md);
 }
 
-.file-row:hover { 
-  background-color: var(--color-hovered); 
-}
-
-.file-row-selected { 
-  background-color: var(--color-active); 
+.file-row-selected,
+.file-row-selected:hover {
+  background-color: var(--color-secondary-bg);
 }
 
 .file-row-name {

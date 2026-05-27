@@ -56,7 +56,6 @@ export default function App() {
   const [selectedTreeId, setSelectedTreeId] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const dropdownRef = useRef(null);
-  const clickTimerRef = useRef(null);
 
   const navItems = [
     { id: "dashboard", icon: "/grid.png", label: "Dashboard" },
@@ -79,14 +78,10 @@ export default function App() {
   }
 
   function handleFileRowClick(item) {
-    if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
-    clickTimerRef.current = setTimeout(() => {
-      setSelectedFile(item);
-    }, 200);
+    setSelectedFile(item);
   }
 
   function handleFileRowDoubleClick(item) {
-    if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
     setSelectedFile(item);
     if (item.type === "folder") setSelectedTreeId(item.id);
   }
