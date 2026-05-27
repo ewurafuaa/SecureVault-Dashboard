@@ -234,8 +234,11 @@ export default function App() {
               <button
                 className={`workspace-profile-btn ${activeView !== "workspace" ? "workspace-profile-btn-inactive" : ""}`}
                 onClick={() => {
-                  setActiveView("workspace");
+                  if (activeView !== "workspace") {
+                    setActiveView("workspace");
+                  } else {
                   setShowWorkspaceDropdown((prev) => !prev);
+                  }
                 }}
               >
                 <div className="workspace-avatar">{getInitials(activeWorkspace.name)}</div>
