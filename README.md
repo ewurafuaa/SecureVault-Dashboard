@@ -8,9 +8,7 @@ The design file includes a dedicated Design System page covering the full color 
 
 - [View Design and Design System](https://www.figma.com/design/3dP61SRt906j1qu1rjVKsC/SecureVault-Dashboard?node-id=242-525&t=IiDsCzAa1AHDpE8V-1)
  
-## Repository and Deployment Links
-
-- [Repository Link](https://github.com/ewurafuaa/SecureVault-Dashboard)
+## Deployment Link
 
 - [Deployment Link](https://securevault-kappa.vercel.app/)
 
