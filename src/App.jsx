@@ -6,6 +6,8 @@ export default function App() {
   const [activeNav, setActiveNav] = useState("dashboard");
   const [showModal, setShowModal] = useState(false);
   const [workspaceName, setWorkspaceName] = useState("");
+  const [modalStep, setModalStep] = useState(1);
+  const [emails, setEmails] = useState(["", "", ""]);
 
   const navItems = [
     { id: "dashboard", icon: "/grid.png", label: "Dashboard" },
@@ -13,38 +15,90 @@ export default function App() {
     { id: "shared", icon: "/people.png", label: "Shared" },
   ];
 
+  function closeModal() {
+    setShowModal(false);
+    setModalStep(1);
+    setWorkspaceName("");
+    setEmails(["", "", ""]);
+  }
+
   return (
     <div className="app-layout">
 
       {/* MODAL OVERLAY */}
       {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+        <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
 
             <div className="modal-header">
               <span className="modal-title">Create Workspace</span>
-              <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
+              <button className="modal-close" onClick={closeModal}>✕</button>
             </div>
 
             <div className="modal-progress">
               <div className="modal-progress-fill" />
-              <div className="modal-progress-track" />
+              <div className={modalStep === 2 ? "modal-progress-fill" : "modal-progress-track"} />
             </div>
 
-            <div className="modal-body">
-              <label className="modal-label">Workspace Name</label>
-              <input
-                className={`modal-input ${workspaceName.trim() ? "modal-input-filled" : ""}`}
-                type="text"
-                placeholder="Add a name"
-                value={workspaceName}
-                onChange={(e) => setWorkspaceName(e.target.value)}
-              />
-            </div>
+            {modalStep === 1 && (
+              <>
+                <div className="modal-body">
+                  <label className="modal-label">Workspace Name</label>
+                  <input
+                    className={`modal-input ${workspaceName.trim() ? "modal-input-filled" : ""}`}
+                    type="text"
+                    placeholder="Add a name"
+                    value={workspaceName}
+                    onChange={(e) => setWorkspaceName(e.target.value)}
+                  />
+                </div>
+                <div className="modal-footer">
+                  <button
+                    className={`modal-next-btn ${workspaceName.trim() ? "modal-next-btn-active" : ""}`}
+                    onClick={() => workspaceName.trim() && setModalStep(2)}
+                  >
+                    Next
+                  </button>
+                </div>
+              </>
+            )}
 
-            <div className="modal-footer">
-              <button className={`modal-next-btn ${workspaceName.trim() ? "modal-next-btn-active" : ""}`}>Next</button>
-            </div>
+            {modalStep === 2 && (
+              <>
+                <div className="modal-body">
+                  <label className="modal-label">Invite collaborators</label>
+                  <div className="modal-emails-scroll">
+                    {emails.map((email, i) => (
+                      <input
+                        key={i}
+                        className={`modal-input ${email.trim() ? "modal-input-filled" : ""}`}
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => {
+                          const updated = [...emails];
+                          updated[i] = e.target.value;
+                          setEmails(updated);
+                        }}
+                      />
+                    ))}
+                    <button
+                      className="modal-add-another"
+                      onClick={() => setEmails([...emails, ""])}
+                    >
+                      Add another
+                    </button>
+                  </div>
+                </div>
+                <div className="modal-footer modal-footer-step2">
+                  <button className="modal-back-btn" onClick={() => setModalStep(1)}>Back</button>
+                  <div className="modal-footer-right">
+                    <button className="modal-skip-btn" onClick={closeModal}>Skip and confirm</button>
+                    <button className="modal-confirm-btn" onClick={closeModal}>Confirm</button>
+                  </div>
+                </div>
+              </>
+            )}
 
           </div>
         </div>

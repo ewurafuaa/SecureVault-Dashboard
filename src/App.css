@@ -331,9 +331,9 @@
   background-color: var(--color-active);
   border: 1px solid var(--color-border-gray);
   border-radius: var(--radius-md);
-  width: 840px;
+  width: 1000px;
   max-width: 90vw;
-  min-height: 540px;
+  min-height: 700px;
   display: flex;
   flex-direction: column;
   padding: var(--spacing-lg);
@@ -358,7 +358,7 @@
   color: var(--color-light-gray);
   font-size: var(--font-size-lg);
   cursor: pointer;
-  padding: 4px;
+  padding: 5px;
   line-height: 1;
   transition: color var(--transition);
 }
@@ -378,6 +378,7 @@
   height: 5px;
   background-color: var(--color-primary-blue);
   border-radius: 5px;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
 }
 
 .modal-progress-track {
@@ -392,6 +393,7 @@
   flex-direction: column;
   gap: var(--spacing-sm);
   flex: 1;
+  overflow: hidden;
 }
 
 .modal-label {
@@ -460,3 +462,100 @@
   background-color: var(--color-pressed-blue);
   box-shadow: 0 0 20px rgba(27, 79, 166, 0.3);
 }
+
+.modal-emails-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  overflow-y: auto;
+  max-height: 260px;
+  padding-right: var(--spacing-sm);
+}
+
+.modal-emails-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal-emails-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-emails-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-gray);
+  border-radius: 5px;
+}
+
+.modal-add-another {
+  background: none;
+  border: none;
+  color: var(--color-primary-blue);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-start;
+  transition: color var(--transition);
+}
+
+.modal-add-another:hover { color: var(--color-hovered-blue); }
+
+.modal-footer-step2 {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-footer-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.modal-back-btn {
+  background: none;
+  color: #fff;
+  border: 1px solid var(--color-border-gray);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.modal-back-btn:hover { background-color: var(--color-hovered); }
+.modal-back-btn:active { background-color: var(--color-pressed); }
+
+.modal-skip-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary-blue);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.modal-skip-btn:hover { color: var(--color-hovered-blue); }
+
+.modal-confirm-btn {
+  background-color: var(--color-primary-blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: background-color var(--transition), box-shadow 150ms ease-in;
+}
+
+.modal-confirm-btn:hover {
+  background-color: var(--color-hovered-blue);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+}
+
+.modal-confirm-btn:active {
+  background-color: var(--color-pressed-blue);
+  box-shadow: 0 0 20px rgba(27, 79, 166, 0.3);
+}
+
