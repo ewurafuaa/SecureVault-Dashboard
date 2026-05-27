@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./App.css";
 
 export default function App() {
@@ -8,6 +8,10 @@ export default function App() {
   const [workspaceName, setWorkspaceName] = useState("");
   const [modalStep, setModalStep] = useState(1);
   const [emails, setEmails] = useState(["", "", ""]);
+  const [workspaces, setWorkspaces] = useState([]);
+  const [activeWorkspace, setActiveWorkspace] = useState(null);
+  const [showWorkspaceDropdown, setShowWorkspaceDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const navItems = [
     { id: "dashboard", icon: "/grid.png", label: "Dashboard" },
@@ -15,12 +19,40 @@ export default function App() {
     { id: "shared", icon: "/people.png", label: "Shared" },
   ];
 
+  function getInitials(name) {
+    return name
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  }
+
+  function confirmWorkspace() {
+    if (!workspaceName.trim()) return;
+    const newWorkspace = { id: Date.now(), name: workspaceName.trim() };
+    setWorkspaces((prev) => [...prev, newWorkspace]);
+    setActiveWorkspace(newWorkspace);
+    closeModal();
+  }
+
   function closeModal() {
     setShowModal(false);
     setModalStep(1);
     setWorkspaceName("");
     setEmails(["", "", ""]);
   }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowWorkspaceDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="app-layout">
@@ -93,8 +125,8 @@ export default function App() {
                 <div className="modal-footer modal-footer-step2">
                   <button className="modal-back-btn" onClick={() => setModalStep(1)}>Back</button>
                   <div className="modal-footer-right">
-                    <button className="modal-skip-btn" onClick={closeModal}>Skip and confirm</button>
-                    <button className="modal-confirm-btn" onClick={closeModal}>Confirm</button>
+                    <button className="modal-skip-btn" onClick={confirmWorkspace}>Skip and confirm</button>
+                    <button className="modal-confirm-btn" onClick={confirmWorkspace}>Confirm</button>
                   </div>
                 </div>
               </>
@@ -128,12 +160,60 @@ export default function App() {
           ))}
         </nav>
 
+        {/* WORKSPACE SECTION */}
         <div className="sidebar-section">
-          <div className="sidebar-section-title">WORKSPACES</div>
-          <button className="create-workspace-btn" onClick={() => setShowModal(true)}>
-            <img src="/add.png" alt="" className="nav-icon" />
-            Create Workspace
-          </button>
+          <div className="sidebar-section-title">WORKSPACE</div>
+
+          {activeWorkspace ? (
+            <div className="workspace-selector-wrapper" ref={dropdownRef}>
+              <button
+                className="workspace-profile-btn"
+                onClick={() => setShowWorkspaceDropdown((prev) => !prev)}
+              >
+                <div className="workspace-avatar">
+                  {getInitials(activeWorkspace.name)}
+                </div>
+                <span className="workspace-name">{activeWorkspace.name}</span>
+                <img src="/chevron-down.png" alt="" className="workspace-chevron" />
+              </button>
+
+              {showWorkspaceDropdown && (
+                <div className="workspace-dropdown">
+                  {workspaces.map((ws) => (
+                    <div
+                      key={ws.id}
+                      className={`workspace-dropdown-item ${activeWorkspace.id === ws.id ? "active" : ""}`}
+                      onClick={() => {
+                        setActiveWorkspace(ws);
+                        setShowWorkspaceDropdown(false);
+                      }}
+                    >
+                      <div className="workspace-avatar workspace-avatar-sm">
+                        {getInitials(ws.name)}
+                      </div>
+                      <span>{ws.name}</span>
+                    </div>
+                  ))}
+                  <div className="workspace-dropdown-divider" />
+                  <button
+                    className="workspace-dropdown-create"
+                    onClick={() => {
+                      setShowWorkspaceDropdown(false);
+                      setShowModal(true);
+                    }}
+                  >
+                    <img src="/add.png" alt="" className="nav-icon" />
+                    Create Workspace
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button className="create-workspace-btn" onClick={() => setShowModal(true)}>
+              <img src="/add.png" alt="" className="nav-icon" />
+              Create Workspace
+            </button>
+          )}
         </div>
 
         <div className="sidebar-bottom">
@@ -152,13 +232,10 @@ export default function App() {
 
       {/* RIGHT SIDE */}
       <div className="right-section">
-
-        {/* TOPBAR */}
         <header className="topbar">
           <nav className="topbar-center">
             <span className="topbar-nav-link active">Dashboard</span>
           </nav>
-
           <div className="topbar-right">
             <div className="search-bar-wrapper">
               <img src="/search.png" alt="search" className="search-icon" />
@@ -175,7 +252,6 @@ export default function App() {
           </div>
         </header>
 
-        {/* MAIN CONTENT */}
         <main className="main-content">
           <div className="panels-wrapper">
             <div className="panel panel-left">
@@ -192,7 +268,6 @@ export default function App() {
             </div>
           </div>
         </main>
-
       </div>
     </div>
   );
