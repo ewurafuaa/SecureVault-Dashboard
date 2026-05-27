@@ -19,10 +19,12 @@ function getMatchingIds(nodes, query) {
 }
 
 export default function FileTree({ data, onSelect, selectedId, searchQuery }) {
+  const foldersOnly = data.filter((node) => node.type === "folder");
+
   const matchingIds = useMemo(() => {
     if (!searchQuery?.trim()) return null;
-    return getMatchingIds(data, searchQuery);
-  }, [data, searchQuery]);
+    return getMatchingIds(foldersOnly, searchQuery);
+  }, [foldersOnly, searchQuery]);
 
   if (matchingIds && matchingIds.size === 0) {
     return (
@@ -34,7 +36,7 @@ export default function FileTree({ data, onSelect, selectedId, searchQuery }) {
 
   return (
     <div className="file-tree" role="tree">
-      {data.map((node) => (
+      {foldersOnly.map((node) => (
         <TreeNode
           key={node.id}
           node={node}

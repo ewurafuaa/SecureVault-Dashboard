@@ -14,6 +14,7 @@ export default function TreeNode({ node, depth, onSelect, selectedId, matchingId
   if (!isMatch) return null;
 
   const isSelected = selectedId === node.id;
+  const isActive = isSelected;
 
   function handleClick() {
     if (isFolder) setIsOpen((p) => !p);
@@ -31,13 +32,13 @@ export default function TreeNode({ node, depth, onSelect, selectedId, matchingId
       e.preventDefault(); setIsOpen(false);
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      const all = document.querySelectorAll(".tree-node");
-      const idx = Array.from(all).findIndex((el) => el === e.currentTarget);
+      const all = document.querySelectorAll(".tree-node-pill");
+      const idx = Array.from(all).findIndex((el) => el === nodeRef.current);
       if (idx < all.length - 1) all[idx + 1].focus();
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      const all = document.querySelectorAll(".tree-node");
-      const idx = Array.from(all).findIndex((el) => el === e.currentTarget);
+      const all = document.querySelectorAll(".tree-node-pill");
+      const idx = Array.from(all).findIndex((el) => el === nodeRef.current);
       if (idx > 0) all[idx - 1].focus();
     }
   }
@@ -58,16 +59,11 @@ export default function TreeNode({ node, depth, onSelect, selectedId, matchingId
   return (
     <div className="tree-node-wrapper">
       <div
-        ref={nodeRef}
-        className={`tree-node ${isSelected ? "tree-node-selected" : ""}`}
-        style={{ paddingLeft: `${depth * 16 + 8}px` }}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
-        role="treeitem"
-        aria-expanded={isFolder ? isOpen : undefined}
+        className="tree-node-row"
+        style={{ paddingLeft: `${depth * 16}px` }}
       >
-        <span className="tree-arrow">
+        {/* CHEVRON */}
+        <span className="tree-arrow" onClick={handleClick}>
           {isFolder && (
             <img
               src="/chevron-right.png"
@@ -80,27 +76,37 @@ export default function TreeNode({ node, depth, onSelect, selectedId, matchingId
             />
           )}
         </span>
-        <img
-          src={isFolder ? "/folder.png" : "/folder.png"}
-          alt=""
-          className="tree-item-icon"
-        />
-        <span className="tree-item-name">{highlight(node.name)}</span>
+
+        {/* PILL */}
+        <div
+          ref={nodeRef}
+          className={`tree-node-pill ${isActive ? "tree-node-pill-active" : ""}`}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          tabIndex={0}
+          role="treeitem"
+          aria-expanded={isFolder ? isOpen : undefined}
+        >
+          <img src="/folder.png" alt="" className="tree-item-icon" />
+          <span className="tree-item-name">{highlight(node.name)}</span>
+        </div>
       </div>
 
       {isFolder && isOpen && node.children?.length > 0 && (
-        <div>
-          {node.children.map((child) => (
-            <TreeNode
-              key={child.id}
-              node={child}
-              depth={depth + 1}
-              onSelect={onSelect}
-              selectedId={selectedId}
-              matchingIds={matchingIds}
-              searchQuery={searchQuery}
-            />
-          ))}
+        <div className="tree-children" style={{ marginLeft: `${depth * 16 + 7}px` }}>
+          {node.children
+            .filter((child) => child.type === "folder")
+            .map((child) => (
+              <TreeNode
+                key={child.id}
+                node={child}
+                depth={0}
+                onSelect={onSelect}
+                selectedId={selectedId}
+                matchingIds={matchingIds}
+                searchQuery={searchQuery}
+              />
+            ))}
         </div>
       )}
     </div>

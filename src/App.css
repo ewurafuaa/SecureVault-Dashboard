@@ -716,7 +716,6 @@
   padding: var(--spacing-sm);
   border: 1px solid var(--color-border-gray);
   border-radius: var(--radius-md);
-
 }
 
 .workspace-sidebar-title {
@@ -837,23 +836,17 @@
   text-align: center;
 }
 
-.tree-node-wrapper { display: flex; flex-direction: column; }
-
-.tree-node {
+.tree-node-wrapper {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px var(--spacing-sm);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: background-color var(--transition);
-  outline: none;
-  user-select: none;
+  flex-direction: column;
 }
 
-.tree-node:hover { background-color: var(--color-hovered); }
-.tree-node:focus { outline: 1px solid var(--color-primary-blue); }
-.tree-node-selected { background-color: var(--color-active); }
+.tree-node-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2.5px 0;
+}
 
 .tree-arrow {
   width: 16px;
@@ -862,6 +855,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .tree-arrow-icon {
@@ -871,20 +865,54 @@
   filter: brightness(5);
 }
 
+.tree-node-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  outline: none;
+  transition: background-color var(--transition), border-color var(--transition);
+  flex: 1;
+  min-width: 0;
+}
+
+.tree-node-pill:hover {
+  background-color: var(--color-hovered);
+}
+
+.tree-node-pill-active {
+  background-color: var(--color-secondary-bg);
+  border-color: var(--color-border-gray);
+}
+
+.tree-node-pill:focus {
+  outline: 1px solid var(--color-primary-blue);
+}
+
 .tree-item-icon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .tree-item-name {
   flex: 1;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   color: var(--color-light-gray);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.tree-children {
+  border-left: 1px solid var(--color-border-gray);
+  padding-left: 8px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .search-highlight {
