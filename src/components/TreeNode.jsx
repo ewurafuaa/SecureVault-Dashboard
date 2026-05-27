@@ -17,7 +17,6 @@ export default function TreeNode({ node, depth, onSelect, selectedId, matchingId
   const isActive = isSelected;
 
   function handleClick() {
-    if (isFolder) setIsOpen((p) => !p);
     onSelect(node);
   }
 

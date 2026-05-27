@@ -1,3 +1,33 @@
+import vaultData from "../data/data.json";
+
+function buildPath(nodes, targetId, path = []) {
+  for (const node of nodes) {
+    const newPath = [...path, node.name];
+    if (node.id === targetId) return newPath;
+    if (node.children) {
+      const found = buildPath(node.children, targetId, newPath);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function getFileIcon(name) {
+  const ext = name.split(".").pop().toLowerCase();
+  const icons = {
+    pdf: "/pdf.png",
+    docx: "/word.png",
+    xlsx: "/excel.png",
+    png: "/image.png",
+    jpg: "/image.png",
+    txt: "/text.png",
+    yaml: "/text.png",
+    svg: "/image.png",
+    ttf: "/text.png",
+  };
+  return icons[ext] || "/file.png";
+}
+
 export default function PropertiesPanel({ file, onClose }) {
   if (!file) {
     return (
@@ -22,7 +52,7 @@ export default function PropertiesPanel({ file, onClose }) {
 
       <div className="details-icon-wrapper">
         <img
-          src={isFolder ? "/folder.png" : "/folder.png"}
+          src={isFolder ? "/folder.png" : getFileIcon(file.name)}
           alt=""
           className="details-icon"
         />
@@ -45,8 +75,8 @@ export default function PropertiesPanel({ file, onClose }) {
           </div>
         )}
         <div className="details-row">
-          <span className="details-label">Location</span>
-          <span className="details-value details-muted">/{file.name}</span>
+            <span className="details-label">Location</span>
+            <span className="details-value">{buildPath(vaultData, file.id)?.join(" / ") || file.name}</span>
         </div>
         <div className="details-row">
           <span className="details-label">Created</span>
@@ -54,7 +84,7 @@ export default function PropertiesPanel({ file, onClose }) {
         </div>
         <div className="details-row">
           <span className="details-label">Created by</span>
-          <span className="details-value">You</span>
+          <span className="details-value">Ewurafua Quansah</span>
         </div>
       </div>
 

@@ -56,6 +56,7 @@ export default function App() {
   const [selectedTreeId, setSelectedTreeId] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const dropdownRef = useRef(null);
+  const clickTimerRef = useRef(null);
 
   const navItems = [
     { id: "dashboard", icon: "/grid.png", label: "Dashboard" },
@@ -74,11 +75,18 @@ export default function App() {
 
   function handleTreeSelect(node) {
     setSelectedTreeId(node.id);
-    if (node.type === "file") setSelectedFile(node);
-    else setSelectedFile(null);
+    setSelectedFile(node);
   }
 
-  function handleFileRowSelect(item) {
+  function handleFileRowClick(item) {
+    if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+    clickTimerRef.current = setTimeout(() => {
+      setSelectedFile(item);
+    }, 200);
+  }
+
+  function handleFileRowDoubleClick(item) {
+    if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
     setSelectedFile(item);
     if (item.type === "folder") setSelectedTreeId(item.id);
   }
@@ -317,7 +325,7 @@ export default function App() {
               {activeNav === "vault" ? (
                 <div className="workspace-panel">
 
-                  {/* VAULT SIDEBAR — folder tree */}
+                  {/* VAULT SIDEBAR */}
                   <div className="workspace-sidebar">
                     <div className="workspace-sidebar-header">
                       <div className="workspace-sidebar-title">
@@ -377,40 +385,49 @@ export default function App() {
                           </span>
                         </div>
                       ) : (
-                        currentItems.map((item) => (
-                          <div
-                            key={item.id}
-                            className={`file-row ${selectedFile?.id === item.id ? "file-row-selected" : ""}`}
-                            onClick={() => handleFileRowSelect(item)}
-                          >
-                            <div className="file-row-name">
-                              <img
-                                src={item.type === "/folder-details.png" ? "/folder.png" : getFileIcon(item.name)}
-                                alt=""
-                                className="file-row-icon"
-                              />
-                              <span>{item.name}</span>
+                        currentItems.map((item, index) => (
+                          <>
+                            <div
+                              key={item.id}
+                              className={`file-row ${selectedFile?.id === item.id ? "file-row-selected" : ""}`}
+                              onClick={() => handleFileRowClick(item)}
+                              onDoubleClick={() => handleFileRowDoubleClick(item)}
+                            >
+                              <div className="file-row-name">
+                                <img
+                                  src={item.type === "folder" ? "/folder.png" : getFileIcon(item.name)}
+                                  alt=""
+                                  className="file-row-icon"
+                                />
+                                <span>{item.name}</span>
+                              </div>
+                              <span className="file-row-col">
+                                {new Date().toLocaleDateString("en-GB")}{"  "}
+                                {new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                              </span>
+                              <span className="file-row-col">
+                                {item.type === "folder" ? "Folder" : item.name.split(".").pop().toUpperCase()}
+                              </span>
+                              <span className="file-row-col">{item.size || "—"}</span>
+                              <button className="file-row-more" onClick={(e) => e.stopPropagation()}>
+                                <img src="/more.png" alt="" className="nav-icon" />
+                              </button>
                             </div>
-                            <span className="file-row-col">
-                              {new Date().toLocaleDateString("en-GB")}{"  "}
-                              {new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
-                            </span>
-                            <span className="file-row-col">
-                              {item.type === "folder" ? "Folder" : item.name.split(".").pop().toUpperCase()}
-                            </span>
-                            <span className="file-row-col">{item.size || "—"}</span>
-                            <button className="file-row-more" onClick={(e) => e.stopPropagation()}>
-                              <img src="/more.png" alt="" className="nav-icon" />
-                            </button>
-                          </div>
+                            {index < currentItems.length - 1 && (
+                              <div key={`divider-${item.id}`} className="workspace-main-divider" />
+                            )}
+                          </>
                         ))
                       )}
                     </div>
 
                     {currentItems.length > 0 && (
-                      <div className="workspace-footer">
-                        {currentItems.length} item{currentItems.length !== 1 ? "s" : ""}
-                      </div>
+                      <>
+                        <div className="workspace-main-divider" />
+                        <div className="workspace-footer">
+                          {currentItems.length} item{currentItems.length !== 1 ? "s" : ""}
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
