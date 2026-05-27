@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import FileTree from "./components/FileTree";
 import PropertiesPanel from "./components/PropertiesPanel";
-import vaultData from "./data/data.json";
+import sampleData from "./data/data.json";
 import "./App.css";
 
 function findNode(nodes, id) {
@@ -61,12 +61,12 @@ export default function App() {
     { id: "dashboard", icon: "/grid.png", label: "Dashboard" },
     { id: "favorites", icon: "/star.png", label: "Favorites" },
     { id: "shared", icon: "/people.png", label: "Shared" },
-    { id: "vault", icon: "/vault.png", label: "Vault" },
+    { id: "sampledata", icon: "/sample-data.png", label: "Sample Data" },
   ];
 
-  const selectedNode = selectedTreeId ? findNode(vaultData, selectedTreeId) : null;
+  const selectedNode = selectedTreeId ? findNode(sampleData, selectedTreeId) : null;
   const currentItems = selectedNode?.type === "folder" ? (selectedNode.children || []) : [];
-  const breadcrumb = selectedTreeId ? buildBreadcrumb(vaultData, selectedTreeId) || [] : [];
+  const breadcrumb = selectedTreeId ? buildBreadcrumb(sampleData, selectedTreeId) || [] : [];
 
   function getInitials(name) {
     return name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
@@ -266,13 +266,13 @@ export default function App() {
       <div className="right-section">
         <header className="topbar">
           <nav className="topbar-center">
-            {activeNav === "vault" && breadcrumb.length > 0 ? (
+            {activeNav === "sampledata" && breadcrumb.length > 0 ? (
               <div className="breadcrumb">
                 <span
                   className="breadcrumb-link"
                   onClick={() => { setSelectedTreeId(null); setSelectedFile(null); }}
                 >
-                  Vault
+                  Sample Data
                 </span>
                 {breadcrumb.map((node, i) => (
                   <span key={node.id} className="breadcrumb-item">
@@ -288,8 +288,8 @@ export default function App() {
               </div>
             ) : (
               <span className="topbar-nav-link active">
-                {activeNav === "vault"
-                  ? "Vault"
+                {activeNav === "sampledata"
+                  ? "Sample Data"
                   : activeWorkspace
                   ? activeWorkspace.name
                   : "Dashboard"}
@@ -317,15 +317,15 @@ export default function App() {
 
             {/* LEFT PANEL */}
             <div className="panel panel-left">
-              {activeNav === "vault" ? (
+              {activeNav === "sampledata" ? (
                 <div className="workspace-panel">
 
-                  {/* VAULT SIDEBAR */}
+                  {/* SAMPLE DATA SIDEBAR */}
                   <div className="workspace-sidebar">
                     <div className="workspace-sidebar-header">
                       <div className="workspace-sidebar-title">
                         <img src="/folder-filled.png" alt="" className="nav-icon" />
-                        <span>Vault</span>
+                        <span>Sample Data</span>
                       </div>
                       <button className="workspace-sub-more">
                         <img src="/more.png" alt="" className="nav-icon" />
@@ -333,7 +333,7 @@ export default function App() {
                     </div>
 
                     <FileTree
-                      data={vaultData}
+                      data={sampleData}
                       onSelect={handleTreeSelect}
                       selectedId={selectedTreeId}
                       searchQuery={searchQuery}
@@ -387,6 +387,24 @@ export default function App() {
                               className={`file-row ${selectedFile?.id === item.id ? "file-row-selected" : ""}`}
                               onClick={() => handleFileRowClick(item)}
                               onDoubleClick={() => handleFileRowDoubleClick(item)}
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  setSelectedFile(item);
+                                  if (item.type === "folder") setSelectedTreeId(item.id);
+                                } else if (e.key === "ArrowDown") {
+                                  e.preventDefault();
+                                  const all = document.querySelectorAll(".file-row");
+                                  const idx = Array.from(all).findIndex((el) => el === e.currentTarget);
+                                  if (idx < all.length - 1) all[idx + 1].focus();
+                                } else if (e.key === "ArrowUp") {
+                                  e.preventDefault();
+                                  const all = document.querySelectorAll(".file-row");
+                                  const idx = Array.from(all).findIndex((el) => el === e.currentTarget);
+                                  if (idx > 0) all[idx - 1].focus();
+                                }
+                              }}
                             >
                               <div className="file-row-name">
                                 <img

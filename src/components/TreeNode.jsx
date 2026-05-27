@@ -26,21 +26,37 @@ export default function TreeNode({ node, depth, onSelect, selectedId, matchingId
       e.preventDefault();
       onSelect(node);
       if (isFolder) setIsOpen((p) => !p);
-    } else if (e.key === "ArrowRight" && isFolder) {
-      e.preventDefault(); setIsOpen(true);
-    } else if (e.key === "ArrowLeft" && isFolder) {
-      e.preventDefault(); setIsOpen(false);
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      if (isFolder) setIsOpen(true);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      if (isFolder) setIsOpen(false);
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      const all = document.querySelectorAll(".tree-node-pill");
-      const idx = Array.from(all).findIndex((el) => el === nodeRef.current);
-      if (idx < all.length - 1) all[idx + 1].focus();
+      const all = Array.from(document.querySelectorAll(".tree-node-pill"));
+      const idx = all.findIndex((el) => el === nodeRef.current);
+      if (idx < all.length - 1) {
+        const next = all[idx + 1];
+        next.focus();
+        next.scrollIntoView({ block: "nearest" });
+        next.dispatchEvent(new CustomEvent("selectonly", { bubbles: true }));
+      }
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      const all = document.querySelectorAll(".tree-node-pill");
-      const idx = Array.from(all).findIndex((el) => el === nodeRef.current);
-      if (idx > 0) all[idx - 1].focus();
+      const all = Array.from(document.querySelectorAll(".tree-node-pill"));
+      const idx = all.findIndex((el) => el === nodeRef.current);
+      if (idx > 0) {
+        const prev = all[idx - 1];
+        prev.focus();
+        prev.scrollIntoView({ block: "nearest" });
+        prev.dispatchEvent(new CustomEvent("selectonly", { bubbles: true }));
+      }
     }
+  }
+
+  function handleSelectOnly() {
+    onSelect(node);
   }
 
   function highlight(name) {
@@ -83,9 +99,17 @@ export default function TreeNode({ node, depth, onSelect, selectedId, matchingId
           className={`tree-node-pill ${isActive ? "tree-node-pill-active" : ""}`}
           onClick={handleClick}
           onKeyDown={handleKeyDown}
+          onSelectOnly={handleSelectOnly}
           tabIndex={0}
           role="treeitem"
           aria-expanded={isFolder ? isOpen : undefined}
+          ref={(el) => {
+            nodeRef.current = el;
+            if (el) {
+              el.addEventListener("selectonly", handleSelectOnly);
+              return () => el.removeEventListener("selectonly", handleSelectOnly);
+            }
+          }}
         >
           <img src="/folder.png" alt="" className="tree-item-icon" />
           <span className="tree-item-name">{highlight(node.name)}</span>

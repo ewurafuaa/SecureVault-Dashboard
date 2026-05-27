@@ -1,4 +1,4 @@
-import vaultData from "../data/data.json";
+import sampleData from "../data/data.json";
 
 function buildPath(nodes, targetId, path = []) {
   for (const node of nodes) {
@@ -76,7 +76,7 @@ export default function PropertiesPanel({ file, onClose }) {
         )}
         <div className="details-row">
             <span className="details-label">Location</span>
-            <span className="details-value">{buildPath(vaultData, file.id)?.join(" / ") || file.name}</span>
+            <span className="details-value">{buildPath(sampleData, file.id)?.join(" / ") || file.name}</span>
         </div>
         <div className="details-row">
           <span className="details-label">Created</span>
