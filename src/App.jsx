@@ -1,5 +1,47 @@
 import { useState, useRef, useEffect } from "react";
+import FileTree from "./components/FileTree";
+import PropertiesPanel from "./components/PropertiesPanel";
+import vaultData from "./data/data.json";
 import "./App.css";
+
+function findNode(nodes, id) {
+  for (const node of nodes) {
+    if (node.id === id) return node;
+    if (node.children) {
+      const found = findNode(node.children, id);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function buildBreadcrumb(nodes, targetId, path = []) {
+  for (const node of nodes) {
+    const newPath = [...path, node];
+    if (node.id === targetId) return newPath;
+    if (node.children) {
+      const found = buildBreadcrumb(node.children, targetId, newPath);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function getFileIcon(name) {
+  const ext = name.split(".").pop().toLowerCase();
+  const icons = {
+    pdf: "/pdf.png",
+    docx: "/word.png",
+    xlsx: "/excel.png",
+    png: "/image.png",
+    jpg: "/image.png",
+    txt: "/text.png",
+    yaml: "/text.png",
+    svg: "/image.png",
+    ttf: "/text.png",
+  };
+  return icons[ext] || "/file.png";
+}
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -11,21 +53,34 @@ export default function App() {
   const [workspaces, setWorkspaces] = useState([]);
   const [activeWorkspace, setActiveWorkspace] = useState(null);
   const [showWorkspaceDropdown, setShowWorkspaceDropdown] = useState(false);
+  const [selectedTreeId, setSelectedTreeId] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const dropdownRef = useRef(null);
 
   const navItems = [
     { id: "dashboard", icon: "/grid.png", label: "Dashboard" },
     { id: "favorites", icon: "/star.png", label: "Favorites" },
     { id: "shared", icon: "/people.png", label: "Shared" },
+    { id: "vault", icon: "/vault.png", label: "Vault" },
   ];
 
+  const selectedNode = selectedTreeId ? findNode(vaultData, selectedTreeId) : null;
+  const currentItems = selectedNode?.type === "folder" ? (selectedNode.children || []) : [];
+  const breadcrumb = selectedTreeId ? buildBreadcrumb(vaultData, selectedTreeId) || [] : [];
+
   function getInitials(name) {
-    return name
-      .split(" ")
-      .map((w) => w[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
+    return name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
+  }
+
+  function handleTreeSelect(node) {
+    setSelectedTreeId(node.id);
+    if (node.type === "file") setSelectedFile(node);
+    else setSelectedFile(null);
+  }
+
+  function handleFileRowSelect(item) {
+    setSelectedFile(item);
+    if (item.type === "folder") setSelectedTreeId(item.id);
   }
 
   function confirmWorkspace() {
@@ -56,21 +111,18 @@ export default function App() {
   return (
     <div className="app-layout">
 
-      {/* Modal Overlay --------------------------------------------------------------------------------------------------------------------- */}
+      {/* MODAL */}
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-
             <div className="modal-header">
               <span className="modal-title">Create Workspace</span>
               <button className="modal-close" onClick={closeModal}>✕</button>
             </div>
-
             <div className="modal-progress">
               <div className="modal-progress-fill" />
               <div className={modalStep === 2 ? "modal-progress-fill" : "modal-progress-track"} />
             </div>
-
             {modalStep === 1 && (
               <>
                 <div className="modal-body">
@@ -86,13 +138,13 @@ export default function App() {
                 <div className="modal-footer">
                   <button
                     className={`modal-next-btn ${workspaceName.trim() ? "modal-next-btn-active" : ""}`}
-                    onClick={() => workspaceName.trim() && setModalStep(2)}>
+                    onClick={() => workspaceName.trim() && setModalStep(2)}
+                  >
                     Next
                   </button>
                 </div>
               </>
             )}
-
             {modalStep === 2 && (
               <>
                 <div className="modal-body">
@@ -112,10 +164,7 @@ export default function App() {
                         }}
                       />
                     ))}
-                    <button
-                      className="modal-add-another"
-                      onClick={() => setEmails([...emails, ""])}
-                    >
+                    <button className="modal-add-another" onClick={() => setEmails([...emails, ""])}>
                       Add another
                     </button>
                   </div>
@@ -129,22 +178,19 @@ export default function App() {
                 </div>
               </>
             )}
-
           </div>
         </div>
       )}
 
-      {/* Sidebar -------------------------------------------------------------------------------------------------------------- */}
+      {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="sidebar-logo">
           <img src="/Logo.png" alt="SecureVault Inc." className="sidebar-logo-img" />
         </div>
-
         <button className="new-btn">
           <img src="/add.png" alt="" className="btn-icon" />
           New
         </button>
-
         <nav className="sidebar-nav">
           {navItems.map((item) => (
             <div
@@ -157,48 +203,34 @@ export default function App() {
             </div>
           ))}
         </nav>
-
-        {/* Workspace Section -------------------------------------------------------------------------------------------- */}
         <div className="sidebar-section">
           <div className="sidebar-section-title">WORKSPACE</div>
-
           {activeWorkspace ? (
             <div className="workspace-selector-wrapper" ref={dropdownRef}>
               <button
                 className="workspace-profile-btn"
                 onClick={() => setShowWorkspaceDropdown((prev) => !prev)}
               >
-                <div className="workspace-avatar">
-                  {getInitials(activeWorkspace.name)}
-                </div>
+                <div className="workspace-avatar">{getInitials(activeWorkspace.name)}</div>
                 <span className="workspace-name">{activeWorkspace.name}</span>
                 <img src="/chevron-down.png" alt="" className="workspace-chevron" />
               </button>
-
               {showWorkspaceDropdown && (
                 <div className="workspace-dropdown">
                   {workspaces.map((ws) => (
                     <div
                       key={ws.id}
                       className={`workspace-dropdown-item ${activeWorkspace.id === ws.id ? "active" : ""}`}
-                      onClick={() => {
-                        setActiveWorkspace(ws);
-                        setShowWorkspaceDropdown(false);
-                      }}
+                      onClick={() => { setActiveWorkspace(ws); setShowWorkspaceDropdown(false); }}
                     >
-                      <div className="workspace-avatar workspace-avatar-sm">
-                        {getInitials(ws.name)}
-                      </div>
+                      <div className="workspace-avatar workspace-avatar-sm">{getInitials(ws.name)}</div>
                       <span>{ws.name}</span>
                     </div>
                   ))}
                   <div className="workspace-dropdown-divider" />
                   <button
                     className="workspace-dropdown-create"
-                    onClick={() => {
-                      setShowWorkspaceDropdown(false);
-                      setShowModal(true);
-                    }}
+                    onClick={() => { setShowWorkspaceDropdown(false); setShowModal(true); }}
                   >
                     <img src="/add.png" alt="" className="workspace-icon" />
                     Create Workspace
@@ -213,7 +245,6 @@ export default function App() {
             </button>
           )}
         </div>
-
         <div className="sidebar-bottom">
           <div className="storage-card">
             <span className="storage-label">Storage Used</span>
@@ -228,13 +259,39 @@ export default function App() {
         </div>
       </aside>
 
-      {/* Right Side ------------------------------------------------------------------------------- */}
+      {/* RIGHT SIDE */}
       <div className="right-section">
         <header className="topbar">
           <nav className="topbar-center">
-            <span className="topbar-nav-link active">
-              {activeWorkspace ? activeWorkspace.name : "Dashboard"}
-            </span>
+            {activeNav === "vault" && breadcrumb.length > 0 ? (
+              <div className="breadcrumb">
+                <span
+                  className="breadcrumb-link"
+                  onClick={() => { setSelectedTreeId(null); setSelectedFile(null); }}
+                >
+                  Vault
+                </span>
+                {breadcrumb.map((node, i) => (
+                  <span key={node.id} className="breadcrumb-item">
+                    <img src="/chevron-right.png" alt="" className="breadcrumb-sep" />
+                    <span
+                      className={`breadcrumb-link ${i === breadcrumb.length - 1 ? "breadcrumb-active" : ""}`}
+                      onClick={() => handleTreeSelect(node)}
+                    >
+                      {node.name}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <span className="topbar-nav-link active">
+                {activeNav === "vault"
+                  ? "Vault"
+                  : activeWorkspace
+                  ? activeWorkspace.name
+                  : "Dashboard"}
+              </span>
+            )}
           </nav>
           <div className="topbar-right">
             <div className="search-bar-wrapper">
@@ -255,62 +312,107 @@ export default function App() {
         <main className="main-content">
           <div className="panels-wrapper">
 
-            {/* Left Panel ------------------------------------------------------------------------ */}
+            {/* LEFT PANEL */}
             <div className="panel panel-left">
-              {activeWorkspace ? (
+              {activeNav === "vault" ? (
                 <div className="workspace-panel">
 
-                  {/* Workspace Sidebar ------------------------------------------------------- */}
+                  {/* VAULT SIDEBAR — folder tree */}
                   <div className="workspace-sidebar">
                     <div className="workspace-sidebar-header">
                       <div className="workspace-sidebar-title">
                         <img src="/folder-filled.png" alt="" className="nav-icon" />
-                        <span>{activeWorkspace.name}</span>
+                        <span>Vault</span>
                       </div>
                       <button className="workspace-sub-more">
                         <img src="/more.png" alt="" className="nav-icon" />
                       </button>
                     </div>
+
+                    <FileTree
+                      data={vaultData}
+                      onSelect={handleTreeSelect}
+                      selectedId={selectedTreeId}
+                      searchQuery={searchQuery}
+                    />
                   </div>
 
-                  {/* Workspace Main Area ----------------------------------------------------- */}
+                  {/* FILE LIST */}
                   <div className="workspace-main">
                     <div className="workspace-toolbar">
                       <button className="toolbar-btn">
-                        <img src="/upload.png" alt="" className="nav-icon" />
-                        Upload
+                        <img src="/upload.png" alt="" className="nav-icon" /> Upload
                       </button>
                       <button className="toolbar-btn">
-                        <img src="/create-folder.png" alt="" className="nav-icon" />
-                        Create Folder
+                        <img src="/create-folder.png" alt="" className="nav-icon" /> Create Folder
                       </button>
                       <button className="toolbar-btn">
-                        <img src="/share.png" alt="" className="nav-icon" />
-                        Share
+                        <img src="/share.png" alt="" className="nav-icon" /> Share
                       </button>
                       <button className="toolbar-btn toolbar-btn-sort">
-                        <img src="/sort.png" alt="" className="nav-icon" />
-                        Sort
+                        <img src="/sort.png" alt="" className="nav-icon" /> Sort
                       </button>
                     </div>
 
-                    <div className="workspace-main-divider"/>
+                    <div className="workspace-main-divider" />
 
                     <div className="workspace-table-header">
                       <span className="table-col-name">Name</span>
                       <span className="table-col">Date Modified</span>
                       <span className="table-col">Type</span>
                       <span className="table-col">Size</span>
+                      <span className="table-col-actions" />
                     </div>
 
-                    <div className="workspace-main-divider"/>
+                    <div className="workspace-main-divider" />
 
-                    <div className="workspace-empty">
-                      <img src="/recents.png" alt="" className="panel-empty-icon" />
-                      <span className="panel-empty-text">Workspace documents will appear here</span>
+                    <div className="workspace-file-list">
+                      {currentItems.length === 0 ? (
+                        <div className="workspace-empty">
+                          <img src="/recents.png" alt="" className="panel-empty-icon" />
+                          <span className="panel-empty-text">
+                            {selectedNode
+                              ? "This folder is empty"
+                              : "Select a folder to view its contents"}
+                          </span>
+                        </div>
+                      ) : (
+                        currentItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className={`file-row ${selectedFile?.id === item.id ? "file-row-selected" : ""}`}
+                            onClick={() => handleFileRowSelect(item)}
+                          >
+                            <div className="file-row-name">
+                              <img
+                                src={item.type === "/folder-details.png" ? "/folder.png" : getFileIcon(item.name)}
+                                alt=""
+                                className="file-row-icon"
+                              />
+                              <span>{item.name}</span>
+                            </div>
+                            <span className="file-row-col">
+                              {new Date().toLocaleDateString("en-GB")}{"  "}
+                              {new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                            <span className="file-row-col">
+                              {item.type === "folder" ? "Folder" : item.name.split(".").pop().toUpperCase()}
+                            </span>
+                            <span className="file-row-col">{item.size || "—"}</span>
+                            <button className="file-row-more" onClick={(e) => e.stopPropagation()}>
+                              <img src="/more.png" alt="" className="nav-icon" />
+                            </button>
+                          </div>
+                        ))
+                      )}
                     </div>
+
+                    {currentItems.length > 0 && (
+                      <div className="workspace-footer">
+                        {currentItems.length} item{currentItems.length !== 1 ? "s" : ""}
+                      </div>
+                    )}
                   </div>
-
                 </div>
               ) : (
                 <div className="panel-empty">
@@ -322,10 +424,7 @@ export default function App() {
 
             {/* RIGHT PANEL */}
             <div className="panel panel-right">
-              <div className="panel-empty">
-                <img src="/folder-details.png" alt="" className="panel-empty-icon" />
-                <span className="panel-empty-text">Select a folder to view details here</span>
-              </div>
+              <PropertiesPanel file={selectedFile} onClose={() => setSelectedFile(null)} />
             </div>
 
           </div>
