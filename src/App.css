@@ -587,6 +587,10 @@
   background-color: var(--color-pressed); 
 }
 
+.workspace-profile-btn-inactive {
+  background-color: transparent;
+}
+
 .workspace-avatar {
   width: 40px;
   height: 40px;

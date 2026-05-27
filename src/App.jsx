@@ -46,6 +46,7 @@ function getFileIcon(name) {
 export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeNav, setActiveNav] = useState("dashboard");
+  const [activeView, setActiveView] = useState("nav"); // "nav" or "workspace"
   const [showModal, setShowModal] = useState(false);
   const [workspaceName, setWorkspaceName] = useState("");
   const [modalStep, setModalStep] = useState(1);
@@ -91,6 +92,7 @@ export default function App() {
     const newWorkspace = { id: Date.now(), name: workspaceName.trim() };
     setWorkspaces((prev) => [...prev, newWorkspace]);
     setActiveWorkspace(newWorkspace);
+    setActiveView("workspace");
     closeModal();
   }
 
@@ -99,6 +101,17 @@ export default function App() {
     setModalStep(1);
     setWorkspaceName("");
     setEmails(["", "", ""]);
+  }
+
+  function handleNavClick(itemId) {
+    setActiveNav(itemId);
+    setActiveView("nav");
+  }
+
+  function handleWorkspaceClick(ws) {
+    setActiveWorkspace(ws);
+    setActiveView("workspace");
+    setShowWorkspaceDropdown(false);
   }
 
   useEffect(() => {
@@ -110,6 +123,14 @@ export default function App() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  function getTopbarLabel() {
+    if (activeView === "workspace" && activeWorkspace) return activeWorkspace.name;
+    if (activeNav === "sampledata") return "Sample Data";
+    if (activeNav === "favorites") return "Favorites";
+    if (activeNav === "shared") return "Shared";
+    return "Dashboard";
+  }
 
   return (
     <div className="app-layout">
@@ -198,8 +219,8 @@ export default function App() {
           {navItems.map((item) => (
             <div
               key={item.id}
-              className={`sidebar-nav-item ${activeNav === item.id ? "active" : ""}`}
-              onClick={() => setActiveNav(item.id)}
+              className={`sidebar-nav-item ${activeView === "nav" && activeNav === item.id ? "active" : ""}`}
+              onClick={() => handleNavClick(item.id)}
             >
               <img src={item.icon} alt="" className="nav-icon" />
               {item.label}
@@ -211,8 +232,11 @@ export default function App() {
           {activeWorkspace ? (
             <div className="workspace-selector-wrapper" ref={dropdownRef}>
               <button
-                className="workspace-profile-btn"
-                onClick={() => setShowWorkspaceDropdown((prev) => !prev)}
+                className={`workspace-profile-btn ${activeView !== "workspace" ? "workspace-profile-btn-inactive" : ""}`}
+                onClick={() => {
+                  setActiveView("workspace");
+                  setShowWorkspaceDropdown((prev) => !prev);
+                }}
               >
                 <div className="workspace-avatar">{getInitials(activeWorkspace.name)}</div>
                 <span className="workspace-name">{activeWorkspace.name}</span>
@@ -224,7 +248,7 @@ export default function App() {
                     <div
                       key={ws.id}
                       className={`workspace-dropdown-item ${activeWorkspace.id === ws.id ? "active" : ""}`}
-                      onClick={() => { setActiveWorkspace(ws); setShowWorkspaceDropdown(false); }}
+                      onClick={() => handleWorkspaceClick(ws)}
                     >
                       <div className="workspace-avatar workspace-avatar-sm">{getInitials(ws.name)}</div>
                       <span>{ws.name}</span>
@@ -266,7 +290,7 @@ export default function App() {
       <div className="right-section">
         <header className="topbar">
           <nav className="topbar-center">
-            {activeNav === "sampledata" && breadcrumb.length > 0 ? (
+            {activeView === "nav" && activeNav === "sampledata" && breadcrumb.length > 0 ? (
               <div className="breadcrumb">
                 <span
                   className="breadcrumb-link"
@@ -287,13 +311,7 @@ export default function App() {
                 ))}
               </div>
             ) : (
-              <span className="topbar-nav-link active">
-                {activeNav === "sampledata"
-                  ? "Sample Data"
-                  : activeWorkspace
-                  ? activeWorkspace.name
-                  : "Dashboard"}
-              </span>
+              <span className="topbar-nav-link active">{getTopbarLabel()}</span>
             )}
           </nav>
           <div className="topbar-right">
@@ -317,30 +335,21 @@ export default function App() {
 
             {/* LEFT PANEL */}
             <div className="panel panel-left">
-              {activeNav === "sampledata" ? (
-                <div className="workspace-panel">
 
-                  {/* SAMPLE DATA SIDEBAR */}
+              {activeView === "workspace" && activeWorkspace ? (
+                /* WORKSPACE EMPTY STATE */
+                <div className="workspace-panel">
                   <div className="workspace-sidebar">
                     <div className="workspace-sidebar-header">
                       <div className="workspace-sidebar-title">
                         <img src="/folder-filled.png" alt="" className="nav-icon" />
-                        <span>Sample Data</span>
+                        <span>{activeWorkspace.name}</span>
                       </div>
                       <button className="workspace-sub-more">
                         <img src="/more.png" alt="" className="nav-icon" />
                       </button>
                     </div>
-
-                    <FileTree
-                      data={sampleData}
-                      onSelect={handleTreeSelect}
-                      selectedId={selectedTreeId}
-                      searchQuery={searchQuery}
-                    />
                   </div>
-
-                  {/* FILE LIST */}
                   <div className="workspace-main">
                     <div className="workspace-toolbar">
                       <button className="toolbar-btn">
@@ -356,9 +365,7 @@ export default function App() {
                         <img src="/sort.png" alt="" className="nav-icon" /> Sort
                       </button>
                     </div>
-
                     <div className="workspace-main-divider" />
-
                     <div className="workspace-table-header">
                       <span className="table-col-name">Name</span>
                       <span className="table-col">Date Modified</span>
@@ -366,9 +373,58 @@ export default function App() {
                       <span className="table-col">Size</span>
                       <span className="table-col-actions" />
                     </div>
-
                     <div className="workspace-main-divider" />
+                    <div className="workspace-empty">
+                      <img src="/recents.png" alt="" className="panel-empty-icon" />
+                      <span className="panel-empty-text">Workspace documents will appear here</span>
+                    </div>
+                  </div>
+                </div>
 
+              ) : activeView === "nav" && activeNav === "sampledata" ? (
+                /* SAMPLE DATA STATE */
+                <div className="workspace-panel">
+                  <div className="workspace-sidebar">
+                    <div className="workspace-sidebar-header">
+                      <div className="workspace-sidebar-title">
+                        <img src="/folder-filled.png" alt="" className="nav-icon" />
+                        <span>Sample Data</span>
+                      </div>
+                      <button className="workspace-sub-more">
+                        <img src="/more.png" alt="" className="nav-icon" />
+                      </button>
+                    </div>
+                    <FileTree
+                      data={sampleData}
+                      onSelect={handleTreeSelect}
+                      selectedId={selectedTreeId}
+                      searchQuery={searchQuery}
+                    />
+                  </div>
+                  <div className="workspace-main">
+                    <div className="workspace-toolbar">
+                      <button className="toolbar-btn">
+                        <img src="/upload.png" alt="" className="nav-icon" /> Upload
+                      </button>
+                      <button className="toolbar-btn">
+                        <img src="/create-folder.png" alt="" className="nav-icon" /> Create Folder
+                      </button>
+                      <button className="toolbar-btn">
+                        <img src="/share.png" alt="" className="nav-icon" /> Share
+                      </button>
+                      <button className="toolbar-btn toolbar-btn-sort">
+                        <img src="/sort.png" alt="" className="nav-icon" /> Sort
+                      </button>
+                    </div>
+                    <div className="workspace-main-divider" />
+                    <div className="workspace-table-header">
+                      <span className="table-col-name">Name</span>
+                      <span className="table-col">Date Modified</span>
+                      <span className="table-col">Type</span>
+                      <span className="table-col">Size</span>
+                      <span className="table-col-actions" />
+                    </div>
+                    <div className="workspace-main-divider" />
                     <div className="workspace-file-list">
                       {currentItems.length === 0 ? (
                         <div className="workspace-empty">
@@ -433,7 +489,6 @@ export default function App() {
                         ))
                       )}
                     </div>
-
                     {currentItems.length > 0 && (
                       <>
                         <div className="workspace-main-divider" />
@@ -444,7 +499,9 @@ export default function App() {
                     )}
                   </div>
                 </div>
+
               ) : (
+                /* DEFAULT EMPTY STATE */
                 <div className="panel-empty">
                   <img src="/recents.png" alt="" className="panel-empty-icon" />
                   <span className="panel-empty-text">Recently opened documents appear here</span>
