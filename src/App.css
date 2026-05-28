@@ -249,6 +249,10 @@
   color: var(--color-text-secondary); 
 }
 
+.search-bar:not(:placeholder-shown) {
+  color: #fff;
+}
+
 .avatar {
   width: 40px;
   height: 40px;
