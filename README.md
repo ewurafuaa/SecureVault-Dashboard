@@ -29,6 +29,8 @@ npm run dev
 ```
  
 Requires Node.js 18+. No additional environment variables needed.
+
+**Note:** The sample data loaded from `data.json` can be found on the "Sample Data" page by clicking the tab on the sidebar
  
 ---
  
